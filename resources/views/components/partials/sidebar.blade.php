@@ -36,6 +36,14 @@
                         <span class="hide-menu">User Data</span>
                     </a>
                 </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('roles') }}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-key"></i>
+                        </span>
+                        <span class="hide-menu">Role Data</span>
+                    </a>
+                </li>
             </ul>
         </nav>
         <!-- End Sidebar navigation -->
