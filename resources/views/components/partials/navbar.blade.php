@@ -1,4 +1,4 @@
-<header class="app-header">
+<header class="app-header shadow">
     <nav class="navbar navbar-expand-lg navbar-light">
         <ul class="navbar-nav">
             <li class="nav-item d-block d-xl-none">
@@ -6,17 +6,17 @@
                     <i class="ti ti-menu-2"></i>
                 </a>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link nav-icon-hover" href="javascript:void(0)">
                     <i class="ti ti-bell-ringing"></i>
                     <div class="notification bg-primary rounded-circle"></div>
                 </a>
-            </li>
+            </li> --}}
         </ul>
         <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
             <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
                 <a href="https://adminmart.com/product/modernize-free-bootstrap-admin-dashboard/" target="_blank"
-                    class="btn btn-primary">Download Free</a>
+                    class="btn btn-primary">{{ auth()->user()->username }}</a>
                 <li class="nav-item dropdown">
                     <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2"
                         data-bs-toggle="dropdown" aria-expanded="false">
@@ -37,8 +37,13 @@
                                 <i class="ti ti-list-check fs-6"></i>
                                 <p class="mb-0 fs-3">My Task</p>
                             </a>
-                            <a href="./authentication-login.html"
-                                class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                            <div class="d-flex justify-content-center">
+                                <form action="{{ route('logout') }}" method="post">
+                                    @csrf
+                                    <button class="btn btn-outline-primary mt-2 w-100" id="btn-confirm"
+                                        message="You will be logged out of your account">Logout</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </li>
