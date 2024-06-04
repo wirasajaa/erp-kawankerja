@@ -29,7 +29,9 @@ class RolePermissionSeeder extends Seeder
         ]);
 
         $admin = Role::findByName('admin');
-        $admin->givePermissionTo('view-user', 'create-user', 'update-user', 'delete-user', 'detail-user', 'delete-permanent-user', 'manage-trash-user');
+        $admin->givePermissionTo(
+            'super-admin'
+        );
 
         $hr = Role::findByName('human-resources');
         $hr->givePermissionTo('view-user', 'create-user', 'update-user', 'delete-user', 'detail-user');
