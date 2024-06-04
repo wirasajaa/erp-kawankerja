@@ -36,14 +36,24 @@
                         <span class="hide-menu">User Data</span>
                     </a>
                 </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('roles') }}" aria-expanded="false">
-                        <span>
-                            <i class="ti ti-key"></i>
-                        </span>
-                        <span class="hide-menu">Role Data</span>
-                    </a>
-                </li>
+                @can('super-admin')
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('roles') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-shield-lock"></i>
+                            </span>
+                            <span class="hide-menu">Role Data</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('permissions') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-key"></i>
+                            </span>
+                            <span class="hide-menu">Permission Data</span>
+                        </a>
+                    </li>
+                @endcan
             </ul>
         </nav>
         <!-- End Sidebar navigation -->

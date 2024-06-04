@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -41,6 +42,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit-role/{role}', [RoleController::class, 'edit'])->name('roles.edit');
         Route::put('/update-role/{role}', [RoleController::class, 'update'])->name('roles.update');
         Route::delete('/delete-role/{role}', [RoleController::class, 'destroy'])->name('roles.delete');
+    });
+    Route::prefix('permissions')->group(function () {
+        Route::get('/', [PermissionController::class, 'index'])->name('permissions');
+        Route::get('/add-new-permission', [PermissionController::class, 'create'])->name('permissions.create');
+        Route::post('/store-permission', [PermissionController::class, 'store'])->name('permissions.store');
+        Route::get('/edit-permission/{permission:name}', [PermissionController::class, 'edit'])->name('permissions.edit');
+        Route::put('/update-permission/{permission}', [PermissionController::class, 'update'])->name('permissions.update');
+        Route::delete('/delete-permission/{permission}', [PermissionController::class, 'destroy'])->name('permissions.delete');
     });
 });
 
