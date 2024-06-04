@@ -6,6 +6,7 @@ use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -21,7 +22,8 @@ class UserController extends Controller
     }
     public function index()
     {
-        if (auth()->user()->hasRole('admin')) {
+        $this->authorize('view', User::class);
+        if (auth()->user()->hasPermissionTo('manage-trash-user')) {
             $users = User::with('roles')->withTrashed()->get();
         } else {
             $users = User::with('roles')->get();
@@ -30,11 +32,13 @@ class UserController extends Controller
     }
     public function create()
     {
+        $this->authorize('create-user', User::class);
         $role_options = $this->role->all()->pluck('name');
         return view('users.create', compact('role_options'));
     }
     public function store(UserRequest $req)
     {
+        $this->authorize('create-user', User::class);
         $validated = $req->validated();
         try {
             $validated['created_by'] = auth()->user()->id;
@@ -50,12 +54,14 @@ class UserController extends Controller
     }
     public function edit($username)
     {
+        $this->any('edit-user', User::class);
         $role_options = $this->role->all()->pluck('name');
         $user = User::with('roles')->where('username', $username)->firstOrFail();
         return view('users.edit', compact('user', 'role_options'));
     }
     public function update(UserRequest $req, User $user)
     {
+        $this->authorize('view', User::class);
         $validated = $req->validated();
         DB::beginTransaction();
         try {
@@ -75,6 +81,7 @@ class UserController extends Controller
     }
     public function destroy(User $user)
     {
+        $this->authorize('delete-user', User::class);
         try {
             $validated['deleted_by'] = auth()->user()->id;
             $user->update($validated);
@@ -86,6 +93,7 @@ class UserController extends Controller
     }
     public function destroyPermanent($user)
     {
+        $this->authorize('delete-permanent-user', User::class);
         $user = User::withTrashed()->findOrFail($user);
         DB::beginTransaction();
         try {
@@ -100,6 +108,7 @@ class UserController extends Controller
     }
     public function restore($user)
     {
+        $this->authorize('restore-user', User::class);
         $user = User::withTrashed()->findOrFail($user);
         try {
             $user->restore();
