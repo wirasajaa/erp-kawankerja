@@ -32,13 +32,13 @@ class UserController extends Controller
     }
     public function create()
     {
-        $this->authorize('create-user', User::class);
+        $this->authorize('create', User::class);
         $role_options = $this->role->all()->pluck('name');
         return view('users.create', compact('role_options'));
     }
     public function store(UserRequest $req)
     {
-        $this->authorize('create-user', User::class);
+        $this->authorize('create', User::class);
         $validated = $req->validated();
         try {
             $validated['created_by'] = auth()->user()->id;
@@ -54,14 +54,14 @@ class UserController extends Controller
     }
     public function edit($username)
     {
-        $this->any('edit-user', User::class);
+        $this->authorize('edit', User::class);
         $role_options = $this->role->all()->pluck('name');
         $user = User::with('roles')->where('username', $username)->firstOrFail();
         return view('users.edit', compact('user', 'role_options'));
     }
     public function update(UserRequest $req, User $user)
     {
-        $this->authorize('view', User::class);
+        $this->authorize('update', User::class);
         $validated = $req->validated();
         DB::beginTransaction();
         try {
@@ -81,7 +81,7 @@ class UserController extends Controller
     }
     public function destroy(User $user)
     {
-        $this->authorize('delete-user', User::class);
+        $this->authorize('delete', User::class);
         try {
             $validated['deleted_by'] = auth()->user()->id;
             $user->update($validated);
@@ -93,7 +93,7 @@ class UserController extends Controller
     }
     public function destroyPermanent($user)
     {
-        $this->authorize('delete-permanent-user', User::class);
+        $this->authorize('foreDelete', User::class);
         $user = User::withTrashed()->findOrFail($user);
         DB::beginTransaction();
         try {
@@ -108,7 +108,7 @@ class UserController extends Controller
     }
     public function restore($user)
     {
-        $this->authorize('restore-user', User::class);
+        $this->authorize('restore', User::class);
         $user = User::withTrashed()->findOrFail($user);
         try {
             $user->restore();

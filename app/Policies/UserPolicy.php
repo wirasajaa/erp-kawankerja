@@ -7,20 +7,13 @@ use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
-    {
-        return false;
-    }
 
     /**
      * Determine whether the user can view the model.
      */
     public function view(User $user): bool
     {
-        return $user->hasPermissionTo('view-user');
+        return $user->hasAnyPermission('view-user', 'super-admin');
     }
 
     /**
@@ -28,7 +21,12 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create-user');
+        return $user->hasAnyPermission('create-user', 'super-admin');
+    }
+
+    public function edit(User $user): bool
+    {
+        return $user->hasAnyPermission('super-admin', 'update-user');
     }
 
     /**
@@ -36,7 +34,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return $user->hasPermissionTo('update-user') || $user->id == $model->id;
+        return $user->hasAnyPermission('update-user', 'super-admin') || $user->id == $model->id;
     }
 
     /**
@@ -44,7 +42,7 @@ class UserPolicy
      */
     public function delete(User $user): bool
     {
-        return $user->hasPermissionTo('delete-user');
+        return $user->hasAnyPermission('delete-user', 'super-admin');
     }
 
     /**
@@ -52,7 +50,7 @@ class UserPolicy
      */
     public function restore(User $user): bool
     {
-        return $user->hasPermissionTo('restore-user');
+        return $user->hasAnyPermission('restore-user', 'super-admin');
     }
 
     /**
@@ -60,6 +58,6 @@ class UserPolicy
      */
     public function forceDelete(User $user): bool
     {
-        return $user->hasPermissionTo('delete-permanent-user');
+        return $user->hasAnyPermission('delete-permanent-user', 'super-admin');
     }
 }
