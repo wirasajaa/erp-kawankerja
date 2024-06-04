@@ -15,16 +15,19 @@ class RoleController extends Controller
     }
     public function index()
     {
+        $this->authorize('view', Role::class);
         $roles = $this->role->with('permissions')->get();
         return view('roles.index', compact('roles'));
     }
     public function create()
     {
+        $this->authorize('create', Role::class);
         $permissions = config('authorization.permissions');
         return view('roles.create', compact('permissions'));
     }
     public function store(RoleRequest $req)
     {
+        $this->authorize('create', Role::class);
         try {
             $role_data = [
                 'name' => $req->name
@@ -38,6 +41,7 @@ class RoleController extends Controller
     }
     public function edit($role)
     {
+        $this->authorize('update', Role::class);
         $role = $this->role->findByName($role)->load('permissions');
         $role->permissions = collect($role->permissions)->pluck('name');
         $permissions = config('authorization.permissions');
@@ -45,6 +49,7 @@ class RoleController extends Controller
     }
     public function update(RoleRequest $req, $role)
     {
+        $this->authorize('update', Role::class);
         try {
             $role = $this->role->findById($role)->load('permissions');
             $permission = collect($role->permissions)->pluck('name')->values()->all();
@@ -62,6 +67,7 @@ class RoleController extends Controller
     }
     public function destroy($role)
     {
+        $this->authorize('delete', Role::class);
         try {
             $role = $this->role->findById($role)->load('permissions');
             $permission = collect($role->permissions)->pluck('name')->values()->all();

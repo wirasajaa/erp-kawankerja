@@ -3,7 +3,7 @@
         <link rel="stylesheet" href="{{ asset('css/dataTables.dataTables.css') }}">
     @endpush
     <x-card title="Manage Role Data">
-        <a href="{{ route('roles.create') }}" class="btn btn-success">Create New Account</a>
+        <a href="{{ route('roles.create') }}" class="btn btn-success">Create New Role</a>
         <table id="example" class="table table-striped" style="width:100%">
             <thead>
                 <tr>
