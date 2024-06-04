@@ -57,7 +57,11 @@
     @push('script')
         <script src="{{ asset('js/dataTables.js') }}"></script>
         <script>
-            $('#example').DataTable();
+            $('#example').DataTable({
+                order: [
+                    [2, 'asc']
+                ]
+            });
         </script>
     @endpush
 </x-auth-app>
