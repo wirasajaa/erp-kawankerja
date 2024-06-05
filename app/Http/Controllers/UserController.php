@@ -25,7 +25,7 @@ class UserController extends Controller
     public function index()
     {
         $this->authorize('view', User::class);
-        if (auth()->user()->hasPermissionTo('manage-trash-user')) {
+        if (Gate::any(['super-admin', 'manage-trash-user'])) {
             $users = User::with('roles')->withTrashed()->get();
         } else {
             $users = User::with('roles')->get();
