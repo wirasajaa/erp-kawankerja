@@ -3,16 +3,16 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Gate;
 
-class UserRequest extends FormRequest
+class ProjectRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return auth()->user()->hasAnyPermission('super-admin', 'human-resources');
     }
 
     /**
@@ -23,11 +23,11 @@ class UserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'role_name' => 'required|exists:roles,name',
-            'employee_id' => 'nullable|exists:employees,id',
-            'username' => ['required', Rule::unique('users', 'username')->ignore(@$this->user->id)],
-            'email' => ['required', Rule::unique('users', 'email')->ignore(@$this->user->id)],
-            'password' => 'nullable|confirmed',
+            'name' => 'required|min:3',
+            'pic' => 'required|exists:employees,id',
+            'status' => 'required',
+            'cycle' => 'required|numeric',
+            'description' => 'required|min:10',
         ];
     }
 }

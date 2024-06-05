@@ -3,16 +3,17 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
-class UserRequest extends FormRequest
+class ProjectEmployeeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::any('is-admin');
     }
 
     /**
@@ -23,11 +24,9 @@ class UserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'role_name' => 'required|exists:roles,name',
-            'employee_id' => 'nullable|exists:employees,id',
-            'username' => ['required', Rule::unique('users', 'username')->ignore(@$this->user->id)],
-            'email' => ['required', Rule::unique('users', 'email')->ignore(@$this->user->id)],
-            'password' => 'nullable|confirmed',
+            'notes' => 'nullable',
+            'employee_id' => [Rule::requiredIf(is_null($this->employee)), 'exists:employees,id'],
+            'status' => 'required',
         ];
     }
 }

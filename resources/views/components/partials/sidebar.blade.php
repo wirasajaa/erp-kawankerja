@@ -53,6 +53,30 @@
                             <span class="hide-menu">Permission Data</span>
                         </a>
                     </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('employees') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-briefcase"></i>
+                            </span>
+                            <span class="hide-menu">Employee Data</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('projects') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-message-2-code"></i>
+                            </span>
+                            <span class="hide-menu">Project Data</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('meetings') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-calendar-time"></i>
+                            </span>
+                            <span class="hide-menu">Meeting Data</span>
+                        </a>
+                    </li>
                 @endcan
             </ul>
         </nav>

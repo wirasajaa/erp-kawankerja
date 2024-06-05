@@ -23,6 +23,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'username',
+        'employee_id',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -49,4 +50,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    public function employee()
+    {
+        return $this->hasOne(Employee::class, 'id', 'employee_id');
+    }
 }

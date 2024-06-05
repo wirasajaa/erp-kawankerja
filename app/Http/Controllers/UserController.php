@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
+use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -11,10 +12,11 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    public $role;
-    public function __construct(Role $role)
+    public $role, $employee;
+    public function __construct(Role $role, Employee $employee)
     {
         $this->role = $role;
+        $this->employee = $employee;
     }
     private function deleteRole($user_id)
     {
@@ -33,13 +35,15 @@ class UserController extends Controller
     public function create()
     {
         $this->authorize('create', User::class);
+        $employee_options = $this->employee->getEmployeeOptions();
         $role_options = $this->role->all()->pluck('name');
-        return view('users.create', compact('role_options'));
+        return view('users.create', compact('role_options', 'employee_options'));
     }
     public function store(UserRequest $req)
     {
         $this->authorize('create', User::class);
         $validated = $req->validated();
+        DB::beginTransaction();
         try {
             $validated['created_by'] = auth()->user()->id;
             if ($req->password == null) {
@@ -47,8 +51,13 @@ class UserController extends Controller
             }
             $user = User::create($validated);
             $user->assignRole($req->role_name);
+            Employee::find($req->employee_id)->update([
+                'nip' => getNip()
+            ]);
+            DB::commit();
             return redirect()->route('users')->with('system_success', 'Account has created');
         } catch (\Throwable $th) {
+            DB::rollBack();
             return redirect()->back()->withInput()->withErrors(['system_error' => systemMessage('Create new account is failed', $th->getMessage())]);
         }
     }
@@ -56,12 +65,13 @@ class UserController extends Controller
     {
         $this->authorize('edit', User::class);
         $role_options = $this->role->all()->pluck('name');
+        $employee_options = $this->employee->getEmployeeOptions();
         $user = User::with('roles')->where('username', $username)->firstOrFail();
-        return view('users.edit', compact('user', 'role_options'));
+        return view('users.edit', compact('user', 'role_options', 'employee_options'));
     }
     public function update(UserRequest $req, User $user)
     {
-        $this->authorize('update', User::class);
+        $this->authorize('update', [$user]);
         $validated = $req->validated();
         DB::beginTransaction();
         try {

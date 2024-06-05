@@ -21,7 +21,7 @@ $(function () {
         return (
             this.href === url ||
             this.href === getPath(url) ||
-            url.includes(href, 0)
+            url.includes(href, 1)
         );
     });
     element.parentsUntil(".sidebar-nav").each(function (index) {

@@ -28,6 +28,21 @@
                 </x-select-input>
             </div>
             <div class="mb-3">
+                <x-label-input for="inputEmployee">Employee Data</x-label-input>
+                <x-select-input name="employee_id" id="inputEmployee">
+                    @if (count((array) $employee_options) < 1)
+                        <option>No Options</option>
+                    @else
+                        @foreach ($employee_options as $option)
+                            <option
+                                value="{{ $option->id }}"{{ old('employee_id') == $option->id ? ' selected' : '' }}>
+                                {{ $option->title_front . ' ' . $option->fullname . ' ' . $option->title_back }}
+                            </option>
+                        @endforeach
+                    @endif
+                </x-select-input>
+            </div>
+            <div class="mb-3">
                 <x-label-input for="inputPass">Password</x-label-input>
                 <x-text-input type="password" name="password" id="inputRole" value="{{ old('password') }}"
                     placeholder="********" helper="{!! 'default password is \'' . config('app.default_password') . '\'' !!} " />
