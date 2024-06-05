@@ -28,11 +28,13 @@ class EmployeeController extends Controller
     }
     public function index()
     {
+        $this->authorize('view', Employee::class);
         $employees = $this->employee->getEmployees();
         return view('employees.index', compact('employees'));
     }
     public function create()
     {
+        $this->authorize('create', Employee::class);
         $religions = $this->religion_status;
         $maritals = $this->marital_status;
         $blood_type = $this->blood_type;
@@ -40,6 +42,7 @@ class EmployeeController extends Controller
     }
     public function store(EmployeeRequest $req)
     {
+        $this->authorize('create', Employee::class);
         $validated = $req->validated();
         try {
             Employee::create($validated);
@@ -55,6 +58,7 @@ class EmployeeController extends Controller
     public function edit($id)
     {
         $employee = $this->employee->showEmployee($id);
+        $this->authorize('update', $employee);
         $family = $this->family->getFamily($employee->id);
         $educations = $this->education->getEducations($id);
         $certificates = $this->certificate->getCertificates($id);
@@ -68,6 +72,7 @@ class EmployeeController extends Controller
     }
     public function update(Employee $employee, EmployeeRequest $req)
     {
+        $this->authorize('update', $employee);
         $validated = $req->validated();
         try {
             $employee->update($validated);
@@ -78,6 +83,7 @@ class EmployeeController extends Controller
     }
     public function destroy(Employee $employee)
     {
+        $this->authorize('delete', Employee::class);
         try {
             $employee->update(['deleted_by' => auth()->user()->id]);
             $employee->delete();

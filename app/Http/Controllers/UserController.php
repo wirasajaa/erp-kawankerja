@@ -103,7 +103,7 @@ class UserController extends Controller
     }
     public function destroyPermanent($user)
     {
-        $this->authorize('foreDelete', User::class);
+        $this->authorize('forceDelete', User::class);
         $user = User::withTrashed()->findOrFail($user);
         DB::beginTransaction();
         try {

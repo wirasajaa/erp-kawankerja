@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Employee;
 use App\Models\User;
+use App\Policies\EmployeePolicy;
 use App\Policies\PermissionPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\UserPolicy;
@@ -23,6 +25,7 @@ class AuthServiceProvider extends ServiceProvider
         User::class => UserPolicy::class,
         Role::class => RolePolicy::class,
         Permission::class => PermissionPolicy::class,
+        Employee::class => EmployeePolicy::class,
     ];
 
     /**
@@ -37,13 +40,13 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('is-admin', function (User $user) {
-            return $user->hasAnyPermission('super-admin');
+            return $user->hasAnyRole('admin');
         });
         Gate::define('is-hr', function (User $user) {
-            return $user->hasAnyPermission('human-resources');
+            return $user->hasAnyRole('human-resources');
         });
         Gate::define('is-pm', function (User $user) {
-            return $user->hasAnyPermission('project-manager');
+            return $user->hasAnyRole('project-manager');
         });
     }
 }
