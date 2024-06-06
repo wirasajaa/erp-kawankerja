@@ -35,7 +35,7 @@
                             <div class="d-flex gap-1">
                                 <a class="btn btn-sm btn-info"
                                     href="{{ route('employees.edit', ['employee' => $employee->id]) }}"
-                                    aria-expanded="false">
+                                    aria-expanded="false" title="Edit User Data">
                                     <span>
                                         <i class="ti ti-pencil"></i>
                                     </span>
@@ -44,7 +44,8 @@
                                     method="post">
                                     @csrf
                                     @method('delete')
-                                    <button type="submit" class="btn btn-sm btn-danger confirm-delete">
+                                    <button type="submit" class="btn btn-sm btn-danger confirm-delete"
+                                        title="Delete User Data">
                                         <span>
                                             <i class="ti ti-trash"></i>
                                         </span>

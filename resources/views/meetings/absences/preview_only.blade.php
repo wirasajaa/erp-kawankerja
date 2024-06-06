@@ -1,5 +1,5 @@
 <x-auth-app>
-    <x-card title="Meeting Absences">
+    <x-card title="Meeting Attendance List">
         <p class="mb-1 fw-bolder text-primary">Project Profile</p>
         <h1 class="fw-bolder">{{ $project->name }}</h1>
         <h6>Created At {{ readDate($project->created_at) }}</h6>
@@ -14,7 +14,7 @@
         </div>
         <p>{{ $project->description }}</p>
         <hr>
-        <p class="mb-1 fw-bolder text-primary">Absences</p>
+        <p class="mb-1 fw-bolder text-primary">Attendance List</p>
         <table class="table align-middle">
             <thead>
                 <tr>
