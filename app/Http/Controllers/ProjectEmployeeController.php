@@ -17,8 +17,8 @@ class ProjectEmployeeController extends Controller
     }
     public function create()
     {
-        if (Gate::none(['is-admin'])) {
-            return redirect()->back()->withErrors(['system_error' => "You don\'t have enough access!"]);
+        if (Gate::none(['is-admin', 'is-hr'])) {
+            return abort(403, 'THIS ACTION IS UNAUTHORIZED.');
         }
         $projectEmployee = ProjectEmployee::get();
         $employees = $this->employee->getEmployeeForProject($projectEmployee);
@@ -27,8 +27,9 @@ class ProjectEmployeeController extends Controller
     }
     public function store(ProjectEmployeeRequest $req)
     {
-        if (Gate::none(['is-admin', 'is-level2'])) {
-            return redirect()->back()->withErrors(['system_error' => "You don\'t have enough access!"]);
+
+        if (Gate::none(['is-admin', 'is-hr'])) {
+            return abort(403, 'THIS ACTION IS UNAUTHORIZED.');
         }
         $validated = $req->validated();
         try {
@@ -46,21 +47,21 @@ class ProjectEmployeeController extends Controller
             }
             return redirect()->route('projects.preview', ['project' => session('project_id')])->with('system_success', 'New employee has added');
         } catch (\Throwable $th) {
-            return back()->withInput()->withErrors(['system_error' => systemMessage($th->getMessage(), 'Failed to add employee!')]);
+            return back()->withInput()->withErrors(['system_error' => systemMessage('Failed to add employee!', $th->getMessage())]);
         }
     }
     public function edit(ProjectEmployee $employee)
     {
-        if (Gate::none(['is-admin', 'is-level2'])) {
-            return redirect()->back()->withErrors(['system_error' => "You don\'t have enough access!"]);
+        if (Gate::none(['is-admin', 'is-hr'])) {
+            return abort(403, 'THIS ACTION IS UNAUTHORIZED.');
         }
         $employee = $employee->load('profile.user.roles');
         return view('projects.employee.edit', compact('employee'));
     }
     public function update(ProjectEmployeeRequest $req, ProjectEmployee $employee)
     {
-        if (Gate::none(['is-admin', 'is-level2'])) {
-            return redirect()->back()->withErrors(['system_error' => "You don\'t have enough access!"]);
+        if (Gate::none(['is-admin', 'is-hr'])) {
+            return abort(403, 'THIS ACTION IS UNAUTHORIZED.');
         }
         $validated = $req->validated();
         try {
@@ -68,20 +69,20 @@ class ProjectEmployeeController extends Controller
             $employee->update($validated);
             return redirect()->route('projects.preview', ['project' => session('project_id')])->with('system_success', 'Employee data has updated');
         } catch (\Throwable $th) {
-            return back()->withInput()->withErrors(['system_error' => systemMessage($th->getMessage(), 'Failed to update employee!')]);
+            return back()->withInput()->withErrors(['system_error' => systemMessage('Failed to update employee!', $th->getMessage())]);
         }
     }
     public function destroy(ProjectEmployee $employee)
     {
-        if (Gate::none(['is-admin', 'is-level2'])) {
-            return redirect()->back()->withErrors(['system_error' => "You don\'t have enough access!"]);
+        if (Gate::none(['is-admin', 'is-hr'])) {
+            return abort(403, 'THIS ACTION IS UNAUTHORIZED.');
         }
         try {
             $employee->update(['deleted_by' => auth()->user()->id, 'status' => 'NON_ACTIVE']);
             $employee->delete();
             return redirect()->route('projects.preview', ['project' => session('project_id')])->with('system_success', 'Employee data has deleted');
         } catch (\Throwable $th) {
-            return back()->withInput()->withErrors(['system_error' => systemMessage($th->getMessage(), 'Failed to delete employee!')]);
+            return back()->withInput()->withErrors(['system_error' => systemMessage('Failed to delete employee!', $th->getMessage())]);
         }
     }
 }

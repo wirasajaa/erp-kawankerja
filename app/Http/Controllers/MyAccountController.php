@@ -11,9 +11,7 @@ class MyAccountController extends Controller
 {
     public function index(User $user)
     {
-        if (Gate::none(['is-owner'], $user->id)) {
-            return redirect()->back()->withErrors(['system_error' => "You don\'t have enough access!"]);
-        }
+        $this->authorize('myAccount', $user); //userpolicy
         return view('account.index', compact('user'));
     }
     public function changeProfile(Request $req, User $user)
@@ -29,7 +27,7 @@ class MyAccountController extends Controller
             $user->update($validated);
             return redirect()->route('accounts', ['user' => $user->id])->with('system_success', 'Your profile information has updated');
         } catch (\Throwable $th) {
-            return redirect()->back()->withInput()->withErrors(['system_error' => setMessage($th->getMessage(), 'Failed to update profile information!')]);
+            return redirect()->back()->withInput()->withErrors(['system_error' => systemMessage('Failed to update profile information!', $th->getMessage())]);
         }
     }
     public function changePassword(Request $req, User $user)
@@ -44,7 +42,7 @@ class MyAccountController extends Controller
             $user->update($validated);
             return redirect()->route('accounts', ['user' => $user->id])->with('system_success', 'Your password has updated');
         } catch (\Throwable $th) {
-            return redirect()->back()->withInput()->withErrors(['system_error' => setMessage($th->getMessage(), 'Failed to update profile information!')]);
+            return redirect()->back()->withInput()->withErrors(['system_error' => systemMessage('Failed to update profile information!', $th->getMessage())]);
         }
     }
 }

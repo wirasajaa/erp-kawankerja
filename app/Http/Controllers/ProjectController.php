@@ -34,6 +34,7 @@ class ProjectController extends Controller
     }
     public function create()
     {
+        $this->authorize('create', Project::class);
         $employees = $this->employee->getValidEmployeeOptions();
         $status_options = $this->status_options;
 
@@ -42,18 +43,20 @@ class ProjectController extends Controller
 
     public function store(ProjectRequest $req)
     {
+        $this->authorize('create', Project::class);
         $validated = $req->validated();
         try {
             $validated['created_by'] = auth()->user()->id;
             Project::create($validated);
             return redirect()->route('projects')->with('system_success', 'New project has created');
         } catch (\Throwable $th) {
-            return back()->withInput()->withErrors(['system_error' => systemMessage($th->getMessage(), "Failed to create new project!")]);
+            return back()->withInput()->withErrors(['system_error' => systemMessage("Failed to create new project!", $th->getMessage(),)]);
         }
     }
 
     public function edit(Project $project)
     {
+        $this->authorize('update', Project::class);
         $employees = $this->employee->getValidEmployeeOptions();
         $status_options = $this->status_options;
         return view('projects.edit', compact('employees', 'project', 'status_options'));
@@ -61,29 +64,32 @@ class ProjectController extends Controller
 
     public function update(ProjectRequest $req, Project $project)
     {
+        $this->authorize('update', Project::class);
         $validated = $req->validated();
         try {
             $validated['updated_by'] = auth()->user()->id;
             $project->update($validated);
             return redirect()->route('projects')->with('system_success', 'Project data has updated');
         } catch (\Throwable $th) {
-            return back()->withInput()->withErrors(['system_error' => systemMessage($th->getMessage(), "Failed to update project data!")]);
+            return back()->withInput()->withErrors(['system_error' => systemMessage("Failed to update project data!", $th->getMessage(),)]);
         }
     }
 
     public function destroy(Project $project)
     {
+        $this->authorize('delete', Project::class);
         try {
             $project->update(['deleted_by' => auth()->user()->id]);
             $project->delete();
             return redirect()->route('projects')->with('system_success', 'Project data has deleted');
         } catch (\Throwable $th) {
-            return back()->withInput()->withErrors(['system_error' => systemMessage($th->getMessage(), "Failed to delete project data!")]);
+            return back()->withInput()->withErrors(['system_error' => systemMessage("Failed to delete project data!", $th->getMessage(),)]);
         }
     }
 
     public function preview($project)
     {
+        $this->authorize('update', Project::class);
         session(['project_id' => $project]); //use for all project employee action
 
         $project = $this->project->previewProject($project);

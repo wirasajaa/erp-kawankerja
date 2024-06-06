@@ -13,7 +13,7 @@ class FamilyRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('is-admin') || Gate::allows('is-level2') || auth()->check();
+        return auth()->check();
     }
 
     /**

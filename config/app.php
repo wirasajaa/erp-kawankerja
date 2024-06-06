@@ -5,6 +5,8 @@ use Illuminate\Support\ServiceProvider;
 
 return [
     'default_password' => env('DEFAULT_PASSWORD', 'password'),
+
+    'registration_code' => env('REGISTRATION_CODE', "12334567890"),
     /*
     |--------------------------------------------------------------------------
     | Application Name

@@ -3,7 +3,7 @@
         <link rel="stylesheet" href="{{ asset('css/dataTables.dataTables.css') }}">
     @endpush
     <x-card title="Manage Schedule">
-        @canany(['super-admin'])
+        @canany(['is-admin', 'is-hr', 'is-pm'])
             <a href="{{ route('meetings.create', []) }}" class="btn btn-success mb-4">Create new schedule</a>
         @endcanany
         <table class="table" id="meetingTable">
@@ -33,17 +33,19 @@
                             <td>{{ $meeting->description }}</td>
                             <td>
                                 <div class="d-flex gap-1">
-                                    @canany(['is-admin', 'is-level2', 'is-pic-project'], $meeting->project->id)
-                                        <a class="btn btn-sm btn-warning"
-                                            href="{{ route('meetings.edit', ['meeting' => $meeting->id]) }}"
-                                            aria-expanded="false">
-                                            <span>
-                                                <i class="ti ti-pencil"></i>
-                                            </span>
-                                        </a>
+                                    @canany(['is-admin', 'is-hr', 'is-pm'])
+                                        @if ($meeting->status == 'PLAN')
+                                            <a class="btn btn-sm btn-warning"
+                                                href="{{ route('meetings.edit', ['meeting' => $meeting->id]) }}"
+                                                aria-expanded="false" title="edit meeting schedule">
+                                                <span>
+                                                    <i class="ti ti-pencil"></i>
+                                                </span>
+                                            </a>
+                                        @endif
                                         <a class="btn btn-sm btn-info"
                                             href="{{ route('meetings.preview', ['meeting' => $meeting->id]) }}"
-                                            aria-expanded="false">
+                                            aria-expanded="false" title="update attendance list">
                                             <span>
                                                 <i class="ti ti-eye"></i>
                                             </span>
@@ -51,17 +53,18 @@
                                     @endcanany
                                     <a class="btn btn-sm btn-primary"
                                         href="{{ route('meetings.preview-only', ['meeting' => $meeting->id]) }}"
-                                        aria-expanded="false">
+                                        aria-expanded="false" title="Preview Attandance List">
                                         <span>
                                             <i class="ti ti-report-search"></i>
                                         </span>
                                     </a>
-                                    @canany(['is-admin', 'is-level2', 'is-pic-project'], $meeting->project->id)
+                                    @canany(['is-admin', 'is-hr', 'is-pm'])
                                         <form action="{{ route('meetings.delete', ['meeting' => $meeting->id]) }}"
                                             method="post">
                                             @csrf
                                             @method('delete')
-                                            <button type="submit" class="btn btn-sm btn-danger confirm-delete">
+                                            <button type="submit" class="btn btn-sm btn-danger confirm-delete"
+                                                title="Delete Schedule">
                                                 <span>
                                                     <i class="ti ti-trash"></i>
                                                 </span>

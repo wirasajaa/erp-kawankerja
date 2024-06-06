@@ -13,7 +13,7 @@ class ProjectEmployeeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::any('is-admin');
+        return Gate::any(['is-admin', 'is-hr']);
     }
 
     /**

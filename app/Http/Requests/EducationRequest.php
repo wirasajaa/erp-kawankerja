@@ -12,7 +12,7 @@ class EducationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check() || Gate::allows('is-admin') || Gate::allows('is-level2');
+        return auth()->check();
     }
 
     /**

@@ -12,7 +12,7 @@ class AbsenceRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::any(['is-admin', 'is-level2', 'auth-absence'], $this->meeting_id);
+        return Gate::any(['is-admin', 'is-hr', 'is-pm']);
     }
 
     /**

@@ -33,7 +33,7 @@
             </div>
             <div class="mb-3">
                 <x-label-input for="inputDesc">Description</x-label-input>
-                <textarea name="description" id="inputDesc" cols="30" rows="3" class="form-control">{{ old('description', $meeting->description) }}</textarea>
+                <x-textarea-input name="description" id="inputDesc" cols="30" rows="3" :value="old('description', $meeting->description)" />
             </div>
             <button type="submit" class="btn btn-success">Save</button>
         </form>

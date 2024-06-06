@@ -25,47 +25,42 @@ class CertificateController extends Controller
     }
     public function store(CertificateRequest $req)
     {
+        $this->authorize('create', session('employee_id'));
         $validated = $req->validated();
         try {
             $validated['employee_id'] = session('employee_id');
             Certificate::create($validated);
             return redirect()->route('employees.edit', ['employee' => session('employee_id')])->with('system_success', 'New certificate data has added');
         } catch (\Throwable $th) {
-            return back()->withInput()->withErrors(['system_error' => setMessage($th->getMessage(), 'Failed to add new certificate!')]);
+            return back()->withInput()->withErrors(['system_error' => systemMessage('Failed to add new certificate!', $th->getMessage())]);
         }
     }
     public function edit(Certificate $certificate)
     {
-        if (Gate::none(['is-admin', 'is-level2', 'is-employee'], $certificate->employee_id)) {
-            return redirect()->back()->withErrors(['system_error' => "You don\'t have enough access!"]);
-        }
+        $this->authorize('update', $certificate);
         $types = $this->types;
         return view('employees.certificates.edit', compact('certificate', 'types'));
     }
     public function update(CertificateRequest $req, Certificate $certificate)
     {
-        if (Gate::none(['is-admin', 'is-level2', 'is-employee'], $certificate->employee_id)) {
-            return redirect()->back()->withErrors(['system_error' => "You don\'t have enough access!"]);
-        }
+        $this->authorize('update', $certificate);
         $validated = $req->validated();
         try {
             $validated['employee_id'] = session('employee_id');
             $certificate->update($validated);
             return redirect()->route('employees.edit', ['employee' => session('employee_id')])->with('system_success', 'Certificate data has updated');
         } catch (\Throwable $th) {
-            return back()->withInput()->withErrors(['system_error' => setMessage($th->getMessage(), 'Failed to update certificate data!')]);
+            return back()->withInput()->withErrors(['system_error' => systemMessage('Failed to update certificate data!', $th->getMessage())]);
         }
     }
     public function destroy(Certificate $certificate)
     {
-        if (Gate::none(['is-admin', 'is-level2', 'is-employee'], $certificate->employee_id)) {
-            return redirect()->back()->withErrors(['system_error' => "You don\'t have enough access!"]);
-        }
+        $this->authorize('delete', $certificate);
         try {
             $certificate->delete();
             return redirect()->route('employees.edit', ['employee' => session('employee_id')])->with('system_success', 'Certificate data has deleted');
         } catch (\Throwable $th) {
-            return back()->withInput()->withErrors(['system_error' => setMessage($th->getMessage(), 'Failed to delete certificate data!')]);
+            return back()->withInput()->withErrors(['system_error' => systemMessage('Failed to delete certificate data!', $th->getMessage())]);
         }
     }
 }

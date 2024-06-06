@@ -21,7 +21,7 @@ class EmployeePolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user, Employee $employee): bool
+    public function create(User $user): bool
     {
         return $user->hasAnyPermission('create-employee') || Gate::any(['is-admin', 'is-hr']);
     }
@@ -31,7 +31,7 @@ class EmployeePolicy
      */
     public function update(User $user, Employee $employee): bool
     {
-        return $user->hasAnyPermission('update-employee') || Gate::any(['is-admin', 'is-hr']);
+        return $user->hasAnyPermission('update-employee') || Gate::any(['is-admin', 'is-hr']) || $user->employee_id == $employee->id;
     }
 
     /**

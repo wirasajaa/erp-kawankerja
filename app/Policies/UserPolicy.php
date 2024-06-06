@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Support\Facades\Gate;
 
 class UserPolicy
 {
@@ -59,5 +60,10 @@ class UserPolicy
     public function forceDelete(User $user): bool
     {
         return $user->hasAnyPermission('delete-permanent-user', 'super-admin');
+    }
+
+    public function myAccount(User $user, $account)
+    {
+        return $user->id == $account->id;
     }
 }

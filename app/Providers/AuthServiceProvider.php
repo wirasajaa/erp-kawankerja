@@ -2,10 +2,20 @@
 
 namespace App\Providers;
 
+use App\Models\Certificate;
+use App\Models\Education;
 use App\Models\Employee;
+use App\Models\Family;
+use App\Models\MeetingSchedule;
+use App\Models\Project;
 use App\Models\User;
+use App\Policies\CertificatePolicy;
+use App\Policies\EducationPolicy;
 use App\Policies\EmployeePolicy;
+use App\Policies\FamilyPolicy;
+use App\Policies\MeetingPolicy;
 use App\Policies\PermissionPolicy;
+use App\Policies\ProjectPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Auth\Notifications\ResetPassword;
@@ -26,6 +36,11 @@ class AuthServiceProvider extends ServiceProvider
         Role::class => RolePolicy::class,
         Permission::class => PermissionPolicy::class,
         Employee::class => EmployeePolicy::class,
+        MeetingSchedule::class => MeetingPolicy::class,
+        Family::class => FamilyPolicy::class,
+        Certificate::class => CertificatePolicy::class,
+        Education::class => EducationPolicy::class,
+        Project::class => ProjectPolicy::class,
     ];
 
     /**
@@ -45,8 +60,8 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('is-hr', function (User $user) {
             return $user->hasAnyRole('human-resources');
         });
-        Gate::define('is-pm', function (User $user) {
-            return $user->hasAnyRole('project-manager');
+        Gate::define('is-pm', function (User $user, $pic = "") {
+            return count($user->employee->pic) > 0 || $user->employee->id = $pic;
         });
     }
 }

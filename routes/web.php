@@ -70,7 +70,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('/account')->group(function () {
-        Route::get('/{user}', [MyAccountController::class, 'index'])->name('accounts');
+        Route::get('/{user:username}', [MyAccountController::class, 'index'])->name('accounts');
         Route::put('/{user}/profile', [MyAccountController::class, 'changeProfile'])->name('accounts.change-profile');
         Route::put('/{user}/password', [MyAccountController::class, 'changePassword'])->name('accounts.change-password');
     });

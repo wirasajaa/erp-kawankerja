@@ -12,7 +12,7 @@ class ProjectRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->user()->hasAnyPermission('super-admin', 'human-resources');
+        return Gate::any(['is-admin', 'is-hr', 'is-pm']);
     }
 
     /**

@@ -26,6 +26,11 @@ class RolePermissionSeeder extends Seeder
         Role::insert([
             ['id' => Str::ulid()->toBase32(), 'name' => 'admin', 'guard_name' => 'web'],
             ['id' => Str::ulid()->toBase32(), 'name' => 'human-resources', 'guard_name' => 'web'],
+            ['id' => Str::ulid()->toBase32(), 'name' => 'fullstack-webdev', 'guard_name' => 'web'],
+            ['id' => Str::ulid()->toBase32(), 'name' => 'frontend-webdev', 'guard_name' => 'web'],
+            ['id' => Str::ulid()->toBase32(), 'name' => 'backend-webdev', 'guard_name' => 'web'],
+            ['id' => Str::ulid()->toBase32(), 'name' => 'ui/ux', 'guard_name' => 'web'],
+            ['id' => Str::ulid()->toBase32(), 'name' => 'system-analys', 'guard_name' => 'web'],
         ]);
 
         $admin = Role::findByName('admin');
@@ -35,5 +40,31 @@ class RolePermissionSeeder extends Seeder
 
         $hr = Role::findByName('human-resources');
         $hr->givePermissionTo('view-user', 'create-user', 'update-user', 'delete-user', 'detail-user');
+
+        $users = Role::where('name', '!=', 'admin')->orWhere('name', '!=', 'human-resources')->get();
+        foreach ($users as $user) {
+            $user->givePermissionTo(
+                'report-project',
+                'view-project',
+
+                'view-meeting',
+                'preview-meeting',
+
+                'view-family',
+                'create-family',
+                'update-family',
+                'delete-family',
+
+                'view-education',
+                'create-education',
+                'update-education',
+                'delete-education',
+
+                'view-cartificate',
+                'create-cartificate',
+                'update-cartificate',
+                'delete-cartificate',
+            );
+        }
     }
 }

@@ -19,11 +19,12 @@ class MeetingScheduleController extends Controller
     }
     public function index()
     {
+        $this->authorize('view', MeetingSchedule::class);
         $user = auth()->user();
-        if ($user->hasAnyPermission('super-admin', 'view-schedule')) {
+        if (Gate::any(['is-admin', 'is-hr'])) {
             $meetings = $this->meeting->getMeetingsSchedules();
         } else {
-            if ($user->employee->pic != null) {
+            if (count($user->employee->pic) > 0) {
                 $prpojects = $user->employee->pic;
             } else {
                 $prpojects = $user->employee->projectEmployee;
@@ -35,6 +36,7 @@ class MeetingScheduleController extends Controller
 
     public function create()
     {
+        $this->authorize('create', MeetingSchedule::class);
         $projects = $this->project->getProjectOptions();
         $projects = collect($projects)->filter(function ($val) {
             return count($val->employees) > 0;
@@ -43,6 +45,7 @@ class MeetingScheduleController extends Controller
     }
     public function store(MeetingRequest $req)
     {
+        $this->authorize('create', MeetingSchedule::class);
         $picProject = Project::find($req->project_id)->load('lead.pic');
         $collectPIC = collect($picProject->lead->pic);
         $relationProject = $collectPIC->pluck("id")->all();
@@ -63,12 +66,13 @@ class MeetingScheduleController extends Controller
                 return back()->withInput()->withErrors(['system_error' => "Schedule clashes with other schedules"]);
             }
         } catch (\Throwable $th) {
-            return back()->withInput()->withErrors(['system_error' => systemMessage($th->getMessage(), "Failed to craete meeting schedule!")]);
+            return back()->withInput()->withErrors(['system_error' => systemMessage("Failed to craete meeting schedule!", $th->getMessage())]);
         }
     }
 
     public function preview(MeetingSchedule $meeting)
     {
+        $this->authorize('preview', $meeting);
         $status = ['PRESENT', 'SICK', 'PERMISSION', 'LEAVE', 'ABSTAIN'];
         $meeting = $meeting->load('project.employees.profile:id,fullname', 'absences');
         $absences = collect($meeting->absences);
@@ -100,6 +104,7 @@ class MeetingScheduleController extends Controller
     }
     public function previewOnly(MeetingSchedule $meeting)
     {
+        $this->authorize('preview', $meeting);
         $status = ['PRESENT', 'SICK', 'PERMISSION', 'LEAVE', 'ABSTAIN'];
         $meeting = $meeting->load('project.employees.profile:id,fullname', 'absences');
         $absences = collect($meeting->absences);
@@ -131,12 +136,14 @@ class MeetingScheduleController extends Controller
     }
     public function edit(MeetingSchedule $meeting)
     {
+        $this->authorize('update', $meeting);
         $projects = $this->project->getProjectOptions();
         return view('meetings.edit', compact('projects', 'meeting'));
     }
 
     public function update(MeetingSchedule $meeting, MeetingRequest $req)
     {
+        $this->authorize('update', $meeting);
         $picProject = Project::find($req->project_id)->load('lead.pic');
         $collectPIC = collect($picProject->lead->pic);
         $relationProject = $collectPIC->pluck("id")->all();
@@ -156,18 +163,19 @@ class MeetingScheduleController extends Controller
                 return back()->withInput()->withErrors(['system_error' => "Schedule clashes with other schedules"]);
             }
         } catch (\Throwable $th) {
-            return back()->withInput()->withErrors(['system_error' => systemMessage($th->getMessage(), "Failed to update meeting schedule!")]);
+            return back()->withInput()->withErrors(['system_error' => systemMessage("Failed to update meeting schedule!", $th->getMessage())]);
         }
     }
 
     public function destroy(MeetingSchedule $meeting)
     {
+        $this->authorize('delete', $meeting);
         try {
             $meeting->update(['deleted_by' => auth()->user()->id]);
             $meeting->delete();
             return redirect()->route('meetings')->with('system_success', 'Meeting Schedule has deleted!');
         } catch (\Throwable $th) {
-            return back()->withErrors(['system_error' => systemMessage($th->getMessage(), "Deleting meeting schedule is failed!")]);
+            return back()->withErrors(['system_error' => systemMessage("Deleting meeting schedule is failed!", $th->getMessage())]);
         }
     }
 }

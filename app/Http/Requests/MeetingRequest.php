@@ -12,7 +12,7 @@ class MeetingRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::any(['is-admin', 'is-level2', 'is-pic-project'], $this->project_id);
+        return Gate::any(['is-admin', 'is-hr', 'is-pm']);
     }
 
     /**

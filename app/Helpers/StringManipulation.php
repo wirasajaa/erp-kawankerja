@@ -8,7 +8,7 @@ if (!function_exists('systemMessage')) {
 if (!function_exists('getNip')) {
     function getNip()
     {
-        return "KKI" . date('dmyis', strtotime(now()));
+        return "KKI" . date('dmyhi', strtotime(now())) . fake()->lexify('???');
     }
 }
 if (!function_exists('readDate')) {

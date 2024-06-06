@@ -24,11 +24,13 @@ class FamilyController extends Controller
 
     public function create()
     {
+        $this->authorize('create', session('employee_id'));
         $relations = $this->relations;
         return view('employees.family.create', compact('relations'));
     }
     public function store(FamilyRequest $req)
     {
+        $this->authorize('create', session('employee_id'));
         $validated = $req->validated();
         try {
             $validated['created_by'] = auth()->user()->id;
@@ -36,22 +38,18 @@ class FamilyController extends Controller
             Family::create($validated);
             return redirect()->route('employees.edit', ['employee' => session('employee_id')])->with('system_success', 'New family data has added');
         } catch (\Throwable $th) {
-            return back()->withInput()->withErrors(['system_error' => setMessage($th->getMessage(), 'Failed to add new family!')]);
+            return back()->withInput()->withErrors(['system_error' => systemMessage('Failed to add new family!', $th->getMessage())]);
         }
     }
     public function edit(Family $family)
     {
-        if (Gate::none(['is-admin', 'is-level2', 'is-employee'], $family->employee_id)) {
-            return redirect()->back()->withErrors(['system_error' => "You don\'t have access!"]);
-        }
+        $this->authorize('update', $family);
         $relations = $this->relations;
         return view('employees.family.edit', compact('family', 'relations'));
     }
     public function update(FamilyRequest $req, Family $family)
     {
-        if (Gate::none(['is-admin', 'is-level2', 'is-employee'], $family->employee_id)) {
-            return redirect()->back()->withErrors(['system_error' => "You don\'t have enough access!"]);
-        }
+        $this->authorize('update', $family);
         $validated = $req->validated();
         try {
             $validated['updated_by'] = auth()->user()->id;
@@ -59,20 +57,18 @@ class FamilyController extends Controller
             $family->update($validated);
             return redirect()->route('employees.edit', ['employee' => session('employee_id')])->with('system_success', 'Family data has updated');
         } catch (\Throwable $th) {
-            return back()->withInput()->withErrors(['system_error' => setMessage($th->getMessage(), 'Failed to update family data!')]);
+            return back()->withInput()->withErrors(['system_error' => systemMessage('Failed to update family data!', $th->getMessage())]);
         }
     }
     public function destroy(Family $family)
     {
-        if (Gate::none(['is-admin', 'is-level2', 'is-employee'], $family->employee_id)) {
-            return redirect()->back()->withErrors(['system_error' => "You don\'t have enough access!"]);
-        }
+        $this->authorize('delete', $family);
         try {
             $family->update(['deleted_by' => auth()->user()->id]);
             $family->delete();
             return redirect()->route('employees.edit', ['employee' => session('employee_id')])->with('system_success', 'Family data has deleted');
         } catch (\Throwable $th) {
-            return back()->withInput()->withErrors(['system_error' => setMessage($th->getMessage(), 'Failed to delete family data!')]);
+            return back()->withInput()->withErrors(['system_error' => systemMessage('Failed to delete family data!', $th->getMessage())]);
         }
     }
 }

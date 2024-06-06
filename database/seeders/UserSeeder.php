@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Employee;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -16,21 +17,23 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // $adminRole = Role::first();
         $admin = User::create([
             'id' => Str::ulid()->toBase32(),
             'username' => 'MR.Admin',
-            // 'role_id' => $adminRole->id,
             'email' => "admin@exm.com",
             'email_verified_at' => now(),
             'password' => Hash::make('password')
         ]);
         $admin->assignRole('admin');
 
+        $employee = Employee::factory()->count(1)->create();
+        $admin->update(['employee_id' => $employee->first()->id,]);
+
+        $employee = Employee::factory()->count(1)->create();
         $admin = User::create([
             'id' => Str::ulid()->toBase32(),
             'username' => 'MR.HumanResources',
-            // 'role_id' => $adminRole->id,
+            'employee_id' => $employee->first()->id,
             'email' => "hr@exm.com",
             'email_verified_at' => now(),
             'password' => Hash::make('password')

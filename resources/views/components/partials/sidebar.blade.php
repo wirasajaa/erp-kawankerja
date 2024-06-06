@@ -30,15 +30,8 @@
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                     <span class="hide-menu">Managements</span>
                 </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('users') }}" aria-expanded="false">
-                        <span>
-                            <i class="ti ti-users"></i>
-                        </span>
-                        <span class="hide-menu">User Data</span>
-                    </a>
-                </li>
-                @cannot('')
+
+                @can('is-admin')
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('roles') }}" aria-expanded="false">
                             <span>
@@ -55,6 +48,16 @@
                             <span class="hide-menu">Permission Data</span>
                         </a>
                     </li>
+                @endcan
+                @canany(['is-admin', 'is-hr'])
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('users') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-users"></i>
+                            </span>
+                            <span class="hide-menu">User Data</span>
+                        </a>
+                    </li>
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('employees') }}" aria-expanded="false">
                             <span>
@@ -63,23 +66,23 @@
                             <span class="hide-menu">Employee Data</span>
                         </a>
                     </li>
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{ route('projects') }}" aria-expanded="false">
-                            <span>
-                                <i class="ti ti-message-2-code"></i>
-                            </span>
-                            <span class="hide-menu">Project Data</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{ route('meetings') }}" aria-expanded="false">
-                            <span>
-                                <i class="ti ti-calendar-time"></i>
-                            </span>
-                            <span class="hide-menu">Meeting Data</span>
-                        </a>
-                    </li>
-                @endcan
+                @endcanany
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('projects') }}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-message-2-code"></i>
+                        </span>
+                        <span class="hide-menu">Project Data</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('meetings') }}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-calendar-time"></i>
+                        </span>
+                        <span class="hide-menu">Meeting Data</span>
+                    </a>
+                </li>
             </ul>
         </nav>
         <!-- End Sidebar navigation -->

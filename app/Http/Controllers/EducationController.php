@@ -33,6 +33,7 @@ class EducationController extends Controller
     }
     public function store(EducationRequest $req)
     {
+        $this->authorize('create', session('employee_id'));
         $validated = $req->validated();
         try {
             $validated['created_by'] = auth()->user()->id;
@@ -40,22 +41,18 @@ class EducationController extends Controller
             Education::create($validated);
             return redirect()->route('employees.edit', ['employee' => session('employee_id')])->with('system_success', 'New education data has added');
         } catch (\Throwable $th) {
-            return back()->withInput()->withErrors(['system_error' => setMessage($th->getMessage(), 'Failed to add new education!')]);
+            return back()->withInput()->withErrors(['system_error' => systemMessage('Failed to add new education!', $th->getMessage())]);
         }
     }
     public function edit(Education $education)
     {
-        if (Gate::none(['is-admin', 'is-level2', 'is-employee'], $education->employee_id)) {
-            return redirect()->back()->withErrors(['system_error' => "You don\'t have enough access!"]);
-        }
+        $this->authorize('update', $education);
         $educations = $this->educations;
         return view('employees.educations.edit', compact('education', 'educations'));
     }
     public function update(EducationRequest $req, Education $education)
     {
-        if (Gate::none(['is-admin', 'is-level2', 'is-employee'], $education->employee_id)) {
-            return redirect()->back()->withErrors(['system_error' => "You don\'t have enough access!"]);
-        }
+        $this->authorize('update', $education);
         $validated = $req->validated();
         try {
             $validated['updated_by'] = auth()->user()->id;
@@ -63,20 +60,17 @@ class EducationController extends Controller
             $education->update($validated);
             return redirect()->route('employees.edit', ['employee' => session('employee_id')])->with('system_success', 'Education data has updated');
         } catch (\Throwable $th) {
-            return back()->withInput()->withErrors(['system_error' => setMessage($th->getMessage(), 'Failed to update education data!')]);
+            return back()->withInput()->withErrors(['system_error' => systemMessage('Failed to update education data!', $th->getMessage())]);
         }
     }
     public function destroy(Education $education)
     {
-        if (Gate::none(['is-admin', 'is-level2', 'is-employee'], $education->employee_id)) {
-            return redirect()->back()->withErrors(['system_error' => "You don\'t have enough access!"]);
-        }
+        $this->authorize('delete', $education);
         try {
-            $education->update(['deleted_by' => auth()->user()->id]);
             $education->delete();
             return redirect()->route('employees.edit', ['employee' => session('employee_id')])->with('system_success', 'Education data has deleted');
         } catch (\Throwable $th) {
-            return back()->withInput()->withErrors(['system_error' => setMessage($th->getMessage(), 'Failed to delete education data!')]);
+            return back()->withInput()->withErrors(['system_error' => systemMessage('Failed to delete education data!', $th->getMessage())]);
         }
     }
 }

@@ -42,7 +42,9 @@ class EmployeeController extends Controller
     }
     public function store(EmployeeRequest $req)
     {
-        $this->authorize('create', Employee::class);
+        if (!url()->current() == route('register.store')) {
+            $this->authorize('create', Employee::class);
+        }
         $validated = $req->validated();
         try {
             Employee::create($validated);
@@ -58,7 +60,9 @@ class EmployeeController extends Controller
     public function edit($id)
     {
         $employee = $this->employee->showEmployee($id);
+
         $this->authorize('update', $employee);
+
         $family = $this->family->getFamily($employee->id);
         $educations = $this->education->getEducations($id);
         $certificates = $this->certificate->getCertificates($id);
@@ -78,7 +82,7 @@ class EmployeeController extends Controller
             $employee->update($validated);
             return redirect()->route('employees.edit', ['employee' => $employee->id])->with('system_success', 'Employee profile has updated');
         } catch (\Throwable $th) {
-            return redirect()->back()->withInput()->withErrors(['system_error' => systemMessage($th->getMessage(), "Update employee data is failed!")]);
+            return redirect()->back()->withInput()->withErrors(['system_error' => systemMessage("Update employee data is failed!", $th->getMessage())]);
         }
     }
     public function destroy(Employee $employee)
@@ -89,7 +93,7 @@ class EmployeeController extends Controller
             $employee->delete();
             return redirect()->route('employees')->with('system_success', 'Employee data has deleted');
         } catch (\Throwable $th) {
-            return redirect()->back()->withErrors(['system_error' => systemMessage($th->getMessage(), "Delete employee data is failed!")]);
+            return redirect()->back()->withErrors(['system_error' => systemMessage("Delete employee data is failed!", $th->getMessage())]);
         }
     }
 }

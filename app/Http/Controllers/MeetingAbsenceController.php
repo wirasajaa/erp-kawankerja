@@ -14,12 +14,16 @@ class MeetingAbsenceController extends Controller
 {
     public function absence(AbsenceRequest $req)
     {
+
         $validated = $req->validated();
         $data = collect($validated['data']);
         $actionBy = auth()->user()->id;
         $meeting_id = $req->meeting_id;
 
-        $meeting = MeetingSchedule::find($meeting_id);
+        $meeting = MeetingSchedule::find($meeting_id)->load('project');
+        if (Gate::none(['is-admin', 'is-hr', 'is-pm'], $meeting->project->pic)) {
+            return abort(403, 'THIS ACTION IS UNAUTHORIZED.');
+        }
         $date = Carbon::parse($meeting->updated_at);
         $after3D = $date->addDay(3);
         $now = Carbon::now();
@@ -61,7 +65,7 @@ class MeetingAbsenceController extends Controller
             }
         } catch (\Throwable $th) {
             DB::rollBack();
-            return back()->withInput()->withErrors(['system_error' => setMessage($th->getMessage(), "Failed to update meeting absences!")]);
+            return back()->withInput()->withErrors(['system_error' => systemMessage("Failed to update meeting absences!", $th->getMessage())]);
         }
     }
 }

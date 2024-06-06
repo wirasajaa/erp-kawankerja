@@ -32,12 +32,21 @@ class Project extends Model
 
     public function getProjects($perPage = 15)
     {
-        return $this->with('lead:id,fullname')->orderBy('created_at')->paginate($perPage);
+        $data = [];
+        if (Gate::any(['is-admin', 'is-hr'])) {
+            $data = $this->with('lead:id,fullname')->orderBy('created_at')->get();
+        } else if (Gate::allows('is-pm')) {
+            $data = $this->where('pic', auth()->user()->employee->id)->with('lead:id,fullname')->orderBy('created_at')->get();
+        } else {
+            $projects = ProjectEmployee::where('employee_id', auth()->user()->employee_id)->get()->load('project');
+            $data = collect($projects)->pluck('project')->all();
+        }
+        return $data;
     }
 
     public function getProjectOptions()
     {
-        if (auth()->user()->hasAnyPermission('super-admin', 'human-resources')) {
+        if (Gate::any(['is-admin', 'is-hr'])) {
             return $this->select('id', 'name', 'created_at')->where('status', '!=', 'ARCHIVING')->orderBy('created_at')->with('employees')->get();
         } else {
             return $this->select('id', 'name', 'created_at')->where('status', '!=', 'ARCHIVING')->where('pic', auth()->user()->employee->id)->orderBy('created_at')->with('employees')->get();
