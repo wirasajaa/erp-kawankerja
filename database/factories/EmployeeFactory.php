@@ -21,6 +21,7 @@ class EmployeeFactory extends Factory
         $gender = fake()->randomElement(['male', 'female']);
         $fullname = fake('id_ID')->name($gender);
         $user = User::first();
+
         return [
             'id' => Str::ulid()->toBase32(),
             'nip' => getNip(),
