@@ -89,7 +89,7 @@ class EmployeeController extends Controller
     {
         $this->authorize('delete', Employee::class);
         try {
-            $employee->update(['deleted_by' => auth()->user()->id]);
+            // $employee->update(['deleted_by' => auth()->user()->id]);
             $employee->delete();
             return redirect()->route('employees')->with('system_success', 'Employee data has deleted');
         } catch (\Throwable $th) {

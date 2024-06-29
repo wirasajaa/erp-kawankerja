@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Employee extends Model
 {
-    use HasFactory, HasUlids, SoftDeletes;
+    use HasFactory, HasUlids;
     protected $guarded = ['id'];
 
     public function user()
@@ -52,17 +52,20 @@ class Employee extends Model
     }
     public function getValidEmployeeOptions()
     {
-        $employees = $this->select('id', 'fullname')->with('user.roles', 'projectEmployee.project')->get(); //get all employee data
+        $employees = $this->select('id', 'fullname')->get()->load('user.roles', 'projectEmployee.project'); //get all employee data
 
         $data = collect($employees);
         $filter = $data->filter(function ($value) {
             //filter employee data that doesnt have user data or have same id with owned data
             $projectEmployee = collect($value->projectEmployee);
+
+            // check employees don't join other active projects
             $checkArchive = !$projectEmployee->contains(function ($value) {
                 return $value->project->status != "ARCHIVING";
             });
-            $checkValidUser = !is_null($value->user);
-            return  $checkArchive && $checkValidUser;
+            $checkValidUser = !is_null($value->user); // check have relation account
+            $checkNotAdminRole = $value->user->roles[0]->name != 'admin';
+            return  $checkArchive && $checkValidUser && $checkNotAdminRole;
         });
         return (object)$filter->all();
     }

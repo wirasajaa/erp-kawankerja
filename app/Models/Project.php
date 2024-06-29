@@ -30,6 +30,30 @@ class Project extends Model
         return $this->hasMany(MeetingSchedule::class, 'project_id', 'id');
     }
 
+    public function getResume()
+    {
+        $projects = collect($this->get());
+        $archieve = $projects->filter(function ($val) {
+            return $val->status == "ARCHIVING";
+        })->count();
+        $planning = $projects->filter(function ($val) {
+            return $val->status == "IDEA" || $val->status == "PLANNING";
+        })->count();
+        $ongoing = $projects->filter(function ($val) {
+            return $val->status == "DEVELOPMENT" || $val->status == "TESTING" || $val->status == "DEPLOYEMENT";
+        })->count();
+        $published = $projects->filter(function ($val) {
+            return $val->status == "MAINTENANCE";
+        })->count();
+
+        return (object)[
+            'planning' => (object)['name' => "Project planning", 'value' => $planning],
+            'development' => (object)['name' => "Project developed", 'value' => $ongoing],
+            "published" => (object)['name' => "Published project", 'value' => $published],
+            "archive" => (object)['name' => "Archived projects", 'value' => $archieve],
+        ];
+    }
+
     public function getProjects($perPage = 15)
     {
         $data = [];

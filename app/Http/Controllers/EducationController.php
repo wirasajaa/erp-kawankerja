@@ -28,12 +28,13 @@ class EducationController extends Controller
 
     public function create()
     {
+        $this->authorize('create', [Education::class, session('employee_id')]);
         $educations = $this->educations;
         return view('employees.educations.create', compact('educations'));
     }
     public function store(EducationRequest $req)
     {
-        $this->authorize('create', session('employee_id'));
+        $this->authorize('create', [Education::class, session('employee_id')]);
         $validated = $req->validated();
         try {
             $validated['created_by'] = auth()->user()->id;

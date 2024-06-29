@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('project_employees', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->foreignUlid('employee_id')->constrained('employees');
-            $table->foreignUlid('project_id')->constrained('projects');
+            $table->foreignUlid('employee_id')->constrained('employees')->onDelete('cascade');
+            $table->foreignUlid('project_id')->constrained('projects')->onDelete('cascade');
             $table->enum('status', ['ACTIVE', 'NON_ACTIVE'])->default('ACTIVE');
             $table->string('notes')->nullable();
-            $table->foreignUlid('created_by')->nullable()->constrained('users');
-            $table->foreignUlid('updated_by')->nullable()->constrained('users');
-            $table->foreignUlid('deleted_by')->nullable()->constrained('users');
+            $table->foreignUlid('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignUlid('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignUlid('deleted_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
             $table->softDeletes();
         });

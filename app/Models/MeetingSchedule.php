@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MeetingSchedule extends Model
 {
-    use HasFactory, HasUlids, SoftDeletes;
+    use HasFactory, HasUlids;
     protected $guarded = ['id'];
 
     public function project()
@@ -21,10 +21,27 @@ class MeetingSchedule extends Model
         return $this->hasMany(MeetingAbsence::class, 'meeting_id');
     }
 
+    public function getResume()
+    {
+        $data = collect($this->get());
+        $resume = $data->groupBy(function ($val) {
+            return date('F', strtotime($val->meeting_date));
+        })->all();
+        $label = [];
+        $data = [];
+        foreach ($resume as $key => $val) {
+            array_push($label, $key);
+            array_push($data, count($val));
+        }
+        $final = ['label' => $label, 'data' => $data];
+        return $final;
+    }
+
     public function getMeetingsSchedules($perPage = 15)
     {
         return $this->orderBy('meeting_date')->orderBy('meeting_start')->orderBy('project_id')->with('project')->paginate($perPage);
     }
+
     public function getMeetingsSchedulesByUser($projecs = [], $perPage = 15)
     {
         $project_list = collect($projecs)->map(function ($item) {

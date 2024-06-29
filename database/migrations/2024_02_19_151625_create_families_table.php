@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('families', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->foreignUlid('employee_id')->constrained('employees')->nullable();
+            $table->foreignUlid('employee_id')->nullable()->constrained('employees')->onDelete('cascade');
             $table->char('identity_number', 20)->unique();
             $table->string('name');
             $table->enum('relationship', ['FATHER', 'MOTHER', 'SISTER', 'BROTHER']);

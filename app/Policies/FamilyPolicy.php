@@ -23,7 +23,8 @@ class FamilyPolicy
      */
     public function create(User $user, $employee_id): bool
     {
-        return $user->hasAnyPermission('create-family') && $user->employee_id == $employee_id || Gate::any(['is-admin', 'is-hr']);
+        // return Gate::any(['is-admin', 'is-hr']) || $user->hasAnyPermission('create-family') && $user->employee_id == $employee_id;
+        return true;
     }
 
     /**

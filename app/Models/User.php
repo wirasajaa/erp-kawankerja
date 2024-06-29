@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -53,5 +54,18 @@ class User extends Authenticatable
     public function employee()
     {
         return $this->belongsTo(Employee::class, 'employee_id');
+    }
+    public function getResume()
+    {
+        $roles = Role::withCount('users')->get();
+        $resume = [
+            'label' => [],
+            "count" => []
+        ];
+        foreach ($roles as $key => $value) {
+            array_push($resume['count'], $value->users_count);
+            array_push($resume['label'], $value->name);
+        }
+        return (object)$resume;
     }
 }

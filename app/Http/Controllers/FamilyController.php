@@ -24,13 +24,13 @@ class FamilyController extends Controller
 
     public function create()
     {
-        $this->authorize('create', session('employee_id'));
+        $this->authorize('create', [Family::class, session('employee_id')]);
         $relations = $this->relations;
         return view('employees.family.create', compact('relations'));
     }
     public function store(FamilyRequest $req)
     {
-        $this->authorize('create', session('employee_id'));
+        $this->authorize('create', [Family::class, session('employee_id')]);
         $validated = $req->validated();
         try {
             $validated['created_by'] = auth()->user()->id;

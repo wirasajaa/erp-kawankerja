@@ -39,9 +39,10 @@
 
             <div class="mb-3">
                 <x-label-input for="inputDesc">Description</x-label-input>
-                <textarea class="form-control" name="description" id="inputDesc" cols="30" rows="3">{{ old('description') }}</textarea>
+                <x-textarea-input class="form-control" name="description" id="inputDesc" cols="30" rows="3"
+                    :value="old('description')" />
             </div>
-            <button type="submit" class="btn btn-success">Crate</button>
+            <button type="submit" class="btn btn-success">Create</button>
         </form>
     </x-card>
 </x-auth-app>

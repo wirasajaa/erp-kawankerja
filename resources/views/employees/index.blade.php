@@ -44,8 +44,8 @@
                                     method="post">
                                     @csrf
                                     @method('delete')
-                                    <button type="submit" class="btn btn-sm btn-danger confirm-delete"
-                                        title="Delete User Data">
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                        message="this data will be gone forever" id="btn-confirm">
                                         <span>
                                             <i class="ti ti-trash"></i>
                                         </span>

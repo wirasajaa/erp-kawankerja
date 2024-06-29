@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('certificates', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->foreignUlid('employee_id')->constrained('employees');
+            $table->foreignUlid('employee_id')->constrained('employees')->onDelete('cascade');
             $table->enum('type', ['BOOTCAMP', 'INTERNSHIP']);
             $table->string('number');
             $table->string('title');

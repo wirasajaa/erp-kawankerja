@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('education', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->foreignUlid('employee_id')->constrained('employees');
+            $table->foreignUlid('employee_id')->constrained('employees')->onDelete('cascade');
             $table->enum('education_level', ['SD', 'SMP', 'SMA', 'SMK', 'D1', 'D2', 'D3', 'S1', 'S2', 'S3']);
             $table->string('institution');
             $table->string('major');

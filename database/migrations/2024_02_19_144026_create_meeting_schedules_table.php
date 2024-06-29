@@ -13,17 +13,17 @@ return new class extends Migration
     {
         Schema::create('meeting_schedules', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->foreignUlid('project_id')->constrained('projects');
+            $table->foreignUlid('project_id')->constrained('projects')->onDelete('cascade');
             $table->date('meeting_date');
             $table->time('meeting_start');
             $table->time('meeting_end');
             $table->text('description')->nullable();
             $table->enum('status', ['PLAN', 'DONE', 'SKIP'])->default('PLAN');
-            $table->foreignUlid('created_by')->nullable()->constrained('users');
-            $table->foreignUlid('updated_by')->nullable()->constrained('users');
-            $table->foreignUlid('deleted_by')->nullable()->constrained('users');
+            $table->foreignUlid('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignUlid('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            // $table->foreignUlid('deleted_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
-            $table->softDeletes();
+            // $table->softDeletes();
         });
     }
 

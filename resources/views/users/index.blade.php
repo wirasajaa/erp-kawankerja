@@ -31,10 +31,6 @@
                             <div class="d-flex gap-1">
                                 @if ($user->deleted_at == null)
                                     <a href="{{ route('users.edit', ['username' => $user->username]) }}"
-                                        class="btn btn-info btn-sm" title="view detail">
-                                        <span><i class="ti ti-eye fs-4"></i></span>
-                                    </a>
-                                    <a href="{{ route('users.edit', ['username' => $user->username]) }}"
                                         class="btn btn-warning btn-sm" title="edit data">
                                         <span><i class="ti ti-pencil fs-4"></i></span>
                                     </a>

@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('meeting_absences', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->foreignUlid('meeting_id')->constrained('meeting_schedules');
-            $table->foreignUlid('employee_id')->constrained('employees');
+            $table->foreignUlid('meeting_id')->constrained('meeting_schedules')->onDelete('cascade');
+            $table->foreignUlid('employee_id')->constrained('employees')->onDelete('cascade');
             $table->enum('status', ['PRESENT', 'SICK', 'PERMISSION', 'LEAVE', 'ABSTAIN']);
             $table->string('notes')->nullable();
-            $table->foreignUlid('created_by')->nullable()->constrained('users');
-            $table->foreignUlid('updated_by')->nullable()->constrained('users');
+            $table->foreignUlid('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignUlid('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
     }

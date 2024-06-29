@@ -37,7 +37,7 @@ class EmployeePolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Employee $employee): bool
+    public function delete(User $user): bool
     {
         return $user->hasAnyPermission('delete-employee') || Gate::any(['is-admin', 'is-hr']);
     }

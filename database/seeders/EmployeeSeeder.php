@@ -14,7 +14,7 @@ class EmployeeSeeder extends Seeder
      */
     public function run(): void
     {
-        Employee::factory()->count(20)->has(User::factory()->count(1)->state(function (array $attributes, Employee $employee) {
+        Employee::factory()->count(5)->has(User::factory()->count(1)->state(function (array $attributes, Employee $employee) {
             return ['employee_id' => $employee->id];
         }))->create();
     }

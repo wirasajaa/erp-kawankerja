@@ -20,12 +20,13 @@ class CertificateController extends Controller
 
     public function create()
     {
+        $this->authorize('create',  [Certificate::class, session('employee_id')]);
         $types = $this->types;
         return view('employees.certificates.create', compact('types'));
     }
     public function store(CertificateRequest $req)
     {
-        $this->authorize('create', session('employee_id'));
+        $this->authorize('create',  [Certificate::class, session('employee_id')]);
         $validated = $req->validated();
         try {
             $validated['employee_id'] = session('employee_id');

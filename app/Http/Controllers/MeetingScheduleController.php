@@ -171,7 +171,7 @@ class MeetingScheduleController extends Controller
     {
         $this->authorize('delete', $meeting);
         try {
-            $meeting->update(['deleted_by' => auth()->user()->id]);
+            // $meeting->update(['deleted_by' => auth()->user()->id]);
             $meeting->delete();
             return redirect()->route('meetings')->with('system_success', 'Meeting Schedule has deleted!');
         } catch (\Throwable $th) {

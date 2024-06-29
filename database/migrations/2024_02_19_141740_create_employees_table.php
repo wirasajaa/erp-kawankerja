@@ -26,11 +26,16 @@ return new class extends Migration
             $table->date('birthday');
             $table->string('birthplace');
             $table->enum('blood_type', ['A', 'B', 'AB', 'O']);
-            $table->foreignUlid('created_by')->nullable()->constrained('users');
-            $table->foreignUlid('updated_by')->nullable()->constrained('users');
-            $table->foreignUlid('deleted_by')->nullable()->constrained('users');
+            $table->foreignUlid('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignUlid('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            // $table->foreignUlid('deleted_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
-            $table->softDeletes();
+            // $table->softDeletes();
+        });
+
+        // add foreign key to users table
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreignUlid('employee_id')->after('id')->nullable()->references('id')->on('employees')->onDelete('cascade');
         });
     }
 
